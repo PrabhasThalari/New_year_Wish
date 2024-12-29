@@ -1,33 +1,35 @@
 import streamlit as st
+import sys
 
-# App title
 st.title("🎉 New Year Wishes Generator 🎉")
 
-# Input fields
-name = st.text_input("Enter Recipient's Name:")
+# Fetch query parameters
+name = st.text_input("Enter Recipient's Name:", value=sys.argv[1] if len(sys.argv) > 1 else "")
 wish_type = st.selectbox(
     "Choose Wish Type:",
-    ["Heartfelt", "Flirty", "Funny"]
+    ["Heartfelt", "Flirty", "Funny"],
+    index=sys.argv[2] if len(sys.argv) > 2 else 0
 )
 
-# Generate button
+# Display the wish if the button is clicked
 if st.button("Generate Wish"):
     if not name:
         st.warning("Please enter the recipient's name.")
     else:
         if wish_type == "Heartfelt":
-            wish = f"Happy New Year, {name}! 🌟 May 2024 bring you endless joy, success, and beautiful moments. You're truly special, and I wish you all the happiness in the world!"
+            wish = f"Happy New Year, {name}! 🌟 May 2024 bring you endless joy, success, and beautiful moments."
         elif wish_type == "Flirty":
-            wish = f"Happy New Year, {name}! 😉 Just a little wish from me to you—may your 2024 be as amazing as your smile. Here's to a year full of surprises (hopefully including me)!"
+            wish = f"Happy New Year, {name}! 😉 Just a little wish from me to you—may your 2024 be as amazing as your smile."
         elif wish_type == "Funny":
-            wish = f"Hey {name}, Happy New Year! 🎉 Here's to a 2024 where your resolutions last longer than your Wi-Fi signal. 😉 Stay awesome!"
+            wish = f"Hey {name}, Happy New Year! 🎉 Here's to a 2024 where your resolutions last longer than your Wi-Fi signal."
         st.success(wish)
 
-# Optional: Save the wish
-if st.button("Save Wish to File"):
-    if not name:
-        st.warning("Generate a wish first!")
+# Generate URL for sharing
+if st.button("Get Shareable Link"):
+    if name:
+        encoded_name = st.script_request_queue.encode(name)
+        encoded_wish_type = st.script_request_queue.encode(str(wish_type))
+        url = f"https://your-app-name.streamlit.app?name={encoded_name}&wish_type={encoded_wish_type}"
+        st.success(f"Share this link: {url}")
     else:
-        with open("new_year_wish.txt", "w") as file:
-            file.write(wish)
-        st.info("Wish saved to new_year_wish.txt!")
+        st.warning("Please generate a wish first.")
