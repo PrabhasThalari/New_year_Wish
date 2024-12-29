@@ -1,5 +1,6 @@
 import streamlit as st
 import sys
+import urllib.parse
 
 st.title("🎉 New Year Wishes Generator 🎉")
 
@@ -27,9 +28,9 @@ if st.button("Generate Wish"):
 # Generate URL for sharing
 if st.button("Get Shareable Link"):
     if name:
-        encoded_name = st.script_request_queue.encode(name)
-        encoded_wish_type = st.script_request_queue.encode(str(wish_type))
-        url = f"https://your-app-name.streamlit.app?name={encoded_name}&wish_type={encoded_wish_type}"
+        encoded_name = urllib.parse.quote(name)
+        encoded_wish_type = urllib.parse.quote(str(wish_type))
+        url = f"https://your-app-name.streamlit.app/?name={encoded_name}&wish_type={encoded_wish_type}"
         st.success(f"Share this link: {url}")
     else:
         st.warning("Please generate a wish first.")
